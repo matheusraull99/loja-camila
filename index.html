@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loja da Camila</title>
+<style>
+:root{--rosa:#f7b6cf;--rosa-esc:#e0568f;--tinta:#2b2326;--cinza:#f4f1f2;--verde:#b7d433;--ouro:#f2b705}
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;color:var(--tinta);background:#fff;max-width:520px;margin:auto}
+@media(min-width:900px){body{max-width:1100px}.grade{grid-template-columns:repeat(4,1fr)!important}.hero{min-height:360px!important}}
+header{background:var(--rosa);padding:10px 14px;position:sticky;top:0;z-index:20}
+.topo{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.logo{font-family:Georgia,serif;font-size:22px;font-style:italic;letter-spacing:.5px}
+.ic{background:none;border:0;font-size:22px;cursor:pointer;position:relative}
+.badge{position:absolute;top:-4px;right:-6px;background:var(--rosa-esc);color:#fff;font-size:11px;border-radius:9px;padding:1px 5px}
+.busca{display:flex;margin-top:8px}
+.busca input{flex:1;padding:11px;border:0;font-size:15px}
+.busca button{background:var(--ouro);border:0;padding:0 14px;font-size:18px}
+nav{display:none;background:#fff;padding:6px 14px}
+nav.on{display:block}
+nav a{display:block;padding:12px 0;border-bottom:1px solid #eee;text-decoration:none;color:var(--tinta);font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.hero{background:linear-gradient(160deg,#fde3ee,var(--rosa));min-height:300px;padding:28px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hero .txt{display:flex;flex-direction:column;align-items:flex-start;gap:6px;flex:1;min-width:0}
+.hero img{width:44%;max-width:300px;aspect-ratio:3/4;object-fit:cover;object-position:50% 15%;border-radius:50% 50% 12px 12px;border:4px solid #fff;box-shadow:0 8px 24px #e0568f44}
+.hero small{letter-spacing:3px;font-size:12px}
+.hero h1{font-family:Georgia,serif;font-size:34px;font-style:italic;color:var(--rosa-esc);line-height:1.1}
+.hero .off{font-size:clamp(40px,12vw,64px);font-weight:800;color:var(--rosa-esc);line-height:1}
+.hero .cupom{border:2px dashed var(--rosa-esc);padding:6px 12px;font-weight:700;letter-spacing:2px;background:#fff8}
+.btn{background:var(--rosa-esc);color:#fff;border:0;padding:12px 20px;font-weight:700;cursor:pointer;border-radius:3px;font-size:14px}
+.btn.verde{background:var(--verde);color:#2b2a10;width:100%}
+h2{font-family:Georgia,serif;font-size:26px;padding:22px 14px 10px}
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 14px}
+.card{cursor:pointer}
+.foto{aspect-ratio:3/4;border-radius:4px;display:flex;align-items:flex-end;justify-content:center;color:#fff9;font-size:12px;padding:8px;background-size:cover;background-position:center}
+.card b{display:block;font-size:12px;margin-top:6px;text-transform:uppercase}
+.preco{font-size:18px;font-weight:700;margin-top:2px}
+.parc{font-size:11px;color:#777}
+.aviso{font-size:11px;color:#d9822b;margin-top:2px}
+.news{background:var(--cinza);margin:26px 14px;padding:18px}
+.news input{width:70%;padding:10px;border:1px solid #ccc}.news button{padding:10px;border:0;background:#444;color:#fff}
+footer{background:#3a3536;color:#eee;padding:22px 14px;margin-top:20px;font-size:13px;line-height:2}
+footer a{color:#eee;display:block;text-decoration:none}
+.mask{position:fixed;inset:0;background:#0008;display:none;z-index:40}
+.mask.on{display:block}
+.painel{position:fixed;background:#fff;z-index:50;display:none;overflow:auto}
+.painel.on{display:block}
+#prod{inset:0;max-width:520px;margin:auto;padding:14px}
+#carrinho{top:0;right:0;bottom:0;width:min(420px,100%);padding:16px}
+.x{float:right;background:none;border:0;font-size:24px;cursor:pointer}
+.tams button{padding:8px 14px;border:1px solid #bbb;background:#fff;margin-right:6px;cursor:pointer}
+.tams button.sel{background:var(--tinta);color:#fff}
+.lin{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #eee;font-size:14px}
+.cook{position:fixed;bottom:0;left:0;right:0;background:#fffe;font-size:11px;padding:8px;text-align:center;z-index:30}
+.zap{position:fixed;right:14px;bottom:44px;background:#25d366;color:#fff;border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:26px;text-decoration:none;z-index:30}
+</style>
+</head>
+<body>
+<header>
+  <div class="topo">
+    <button class="ic" id="menu" aria-label="Menu">☰</button>
+    <div class="logo">Camila</div>
+    <div><button class="ic" id="abrirCarrinho" aria-label="Carrinho">🛍<span class="badge" id="qtd">0</span></button></div>
+  </div>
+  <div class="busca"><input id="q" placeholder="O que você está buscando?"><button aria-label="Buscar">🔍</button></div>
+</header>
+<nav id="nav">
+  <a href="#destaques">Início</a><a href="#destaques">Produtos</a><a href="#contato">Contato</a><a href="#quem">Quem somos</a>
+</nav>
+
+<section class="hero"><div class="txt">
+  <small>É NOVA POR AQUI?</small>
+  <h1>Bem-vinda<br>à minha loja</h1>
+  <div class="off">5% OFF</div>
+  <div class="cupom">CUPOM BEMVINDA</div>
+  <p style="font-size:13px">No seu primeiro pedido, com desconto aplicado no carrinho.</p>
+  <button class="btn" onclick="location.hash='destaques'">COMPRE AGORA</button>
+</div><img src="camila.png" alt="Camila"></section>
+
+<h2 id="destaques">Destaques</h2>
+<div class="grade" id="gDest"></div>
+
+<h2>Lançamentos</h2>
+<div class="grade" id="gLanc"></div>
+
+<h2 id="quem">Quem somos</h2>
+<div style="display:flex;gap:14px;padding:0 14px;align-items:center">
+  <img src="camila.png" alt="Camila" style="width:130px;height:130px;object-fit:cover;object-position:50% 20%;border-radius:50%;border:4px solid var(--rosa)">
+  <p style="font-size:14px;line-height:1.6">Texto de apresentação da marca da Camila. Conte aqui a história, o estilo e o que torna a loja especial.</p>
+</div>
+
+<div class="news">
+  <h3>Newsletter</h3><p style="font-size:13px;margin:6px 0 10px">Quer receber nossas ofertas? Cadastre-se e comece a recebê-las!</p>
+  <input type="email" placeholder="E-mail"><button>Enviar</button>
+</div>
+
+<footer id="contato">
+  <a href="#destaques">Início</a><a href="#destaques">Produtos</a><a href="#contato">Contato</a><a href="#quem">Quem somos</a>
+  <p style="margin-top:10px">Meios de pagamento: Visa · Mastercard · Pix · Boleto</p>
+  <p>Siga-nos no Instagram: @camila</p>
+</footer>
+
+<a class="zap" href="https://wa.me/5511900000000" target="_blank" aria-label="WhatsApp">✆</a>
+<div class="cook" id="cook">Ao navegar por este site você aceita o uso de cookies para agilizar sua experiência de compra. <a href="#" onclick="document.getElementById('cook').remove();return false">Entendi</a></div>
+
+<div class="mask" id="mask"></div>
+<div class="painel" id="prod"></div>
+<div class="painel" id="carrinho"></div>
+
+<script>
+const PRODUTOS=[
+ {id:1,nome:'Corset Poliana',preco:130,cores:['Azul','Preto'],tam:['P','M','G'],ultima:true,cor:'#9bb4d8'},
+ {id:2,nome:'Corset Renda',preco:125,cores:['Preto'],tam:['P','M','G'],ultima:true,cor:'#4a3f45'},
+ {id:3,nome:'Corset Isabela',preco:120,cores:['Nude'],tam:['P','M'],ultima:true,cor:'#d9b8a4'},
+ {id:4,nome:'Cropped Elza',preco:100,cores:['Branco'],tam:['P','M','G'],ultima:false,cor:'#eee4e8'},
+ {id:5,nome:'Calça Pantalona',preco:200,cores:['Jeans'],tam:['36','38','40','42'],ultima:true,cor:'#7f9cc2'},
+ {id:6,nome:'Conjunto Pérola',preco:290,cores:['Off white'],tam:['P','M','G'],ultima:false,cor:'#f1e8dc'},
+ {id:7,nome:'Corset Floral',preco:120,cores:['Rosa'],tam:['P','M','G'],ultima:true,cor:'#e9a9c0'},
+ {id:8,nome:'Body Bia',preco:75,cores:['Branco','Preto'],tam:['P','M','G'],ultima:true,cor:'#cfc7cc'}
+];
+const R=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let carrinho=JSON.parse(localStorage.getItem('carrinhoCamila')||'[]');
+const $=id=>document.getElementById(id);
+function card(p){return `<div class="card" onclick="abrir(${p.id})"><div class="foto" style="background:${p.cor}">foto do produto</div><b>${p.nome}</b><div class="preco">${R(p.preco)}</div><div class="parc">12x de ${R(p.preco/12)}</div>${p.ultima?'<div class="aviso">Atenção, última peça!</div>':''}</div>`}
+function render(filtro=''){
+ const l=PRODUTOS.filter(p=>p.nome.toLowerCase().includes(filtro.toLowerCase()));
+ $('gDest').innerHTML=l.slice(0,4).map(card).join('')||'<p>Nenhum produto encontrado.</p>';
+ $('gLanc').innerHTML=l.slice(4).map(card).join('');
+}
+$('q').oninput=e=>render(e.target.value);
+$('menu').onclick=()=>$('nav').classList.toggle('on');
+function fechar(){['prod','carrinho','mask'].forEach(i=>$(i).classList.remove('on'))}
+$('mask').onclick=fechar;
+let sel={};
+function abrir(id){
+ const p=PRODUTOS.find(x=>x.id==id);sel={id,cor:p.cores[0],tam:null};
+ $('prod').innerHTML=`<button class="x" onclick="fechar()">×</button><div class="foto" style="background:${p.cor};aspect-ratio:3/4;margin-top:30px">foto do produto</div>
+ <h2 style="padding:14px 0 4px">${p.nome}</h2><div class="preco" style="font-size:26px">${R(p.preco)}</div><div class="parc">12x de ${R(p.preco/12)}</div>
+ <p style="margin:12px 0 6px;font-size:14px">Cor: <b id="corSel">${p.cores[0]}</b></p>
+ <div class="tams">${p.cores.map(c=>`<button class="${c==p.cores[0]?'sel':''}" onclick="escCor(this,'${c}')">${c}</button>`).join('')}</div>
+ <p style="margin:12px 0 6px;font-size:14px">Tamanho:</p>
+ <div class="tams">${p.tam.map(t=>`<button onclick="escTam(this,'${t}')">${t}</button>`).join('')}</div>
+ <p id="erro" style="color:#c00;font-size:13px;margin-top:8px"></p>
+ <div style="margin-top:16px"><button class="btn verde" onclick="comprar()">Comprar</button></div>`;
+ $('prod').classList.add('on');$('mask').classList.add('on');
+}
+function escCor(b,c){sel.cor=c;$('corSel').textContent=c;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')}
+function escTam(b,t){sel.tam=t;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')}
+function comprar(){
+ if(!sel.tam){$('erro').textContent='Escolha um tamanho.';return}
+ const ex=carrinho.find(i=>i.id==sel.id&&i.cor==sel.cor&&i.tam==sel.tam);
+ ex?ex.q++:carrinho.push({...sel,q:1});
+ salvar();fechar();abrirCarrinho();
+}
+function salvar(){localStorage.setItem('carrinhoCamila',JSON.stringify(carrinho));$('qtd').textContent=carrinho.reduce((a,i)=>a+i.q,0)}
+function abrirCarrinho(){
+ const total=carrinho.reduce((a,i)=>a+i.q*PRODUTOS.find(p=>p.id==i.id).preco,0);
+ $('carrinho').innerHTML=`<button class="x" onclick="fechar()">×</button><h3>Carrinho de compras</h3><div style="margin-top:14px">`+
+ (carrinho.length?carrinho.map((i,n)=>{const p=PRODUTOS.find(x=>x.id==i.id);return `<div class="lin"><span>${p.nome} (${i.cor}, ${i.tam}) × ${i.q}</span><span>${R(p.preco*i.q)} <a href="#" onclick="rem(${n});return false" style="color:#c00;font-size:12px">Remover</a></span></div>`}).join(''):'<p>Seu carrinho está vazio.</p>')+
+ `</div><p class="lin"><b>Total</b><b>${R(total)}</b></p><p style="font-size:12px;color:#777;margin:8px 0">Frete calculado no checkout. Use o cupom BEMVINDA no primeiro pedido.</p>
+ <button class="btn verde" onclick="finalizar()">Iniciar compra</button>`;
+ $('carrinho').classList.add('on');$('mask').classList.add('on');
+}
+function rem(n){carrinho.splice(n,1);salvar();abrirCarrinho()}
+function finalizar(){
+ if(!carrinho.length)return;
+ const t=carrinho.map(i=>{const p=PRODUTOS.find(x=>x.id==i.id);return `• ${p.nome} (${i.cor}, ${i.tam}) x${i.q}`}).join('%0A');
+ window.open('https://wa.me/5511900000000?text='+encodeURIComponent('Olá! Quero finalizar este pedido:\n')+t,'_blank');
+}
+$('abrirCarrinho').onclick=abrirCarrinho;
+render();salvar();
+</script>
+</body>
+</html>
