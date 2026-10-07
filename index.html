@@ -23,7 +23,7 @@ nav a{display:block;padding:12px 0;border-bottom:1px solid #eee;text-decoration:
 .hero{background:linear-gradient(160deg,#fde3ee,var(--rosa));min-height:300px;padding:28px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .hero .txt{display:flex;flex-direction:column;align-items:flex-start;gap:6px;flex:1;min-width:0}
 .hero img{width:44%;max-width:300px;aspect-ratio:3/4;object-fit:cover;object-position:50% 15%;border-radius:50% 50% 12px 12px;border:4px solid #fff;box-shadow:0 8px 24px #e0568f44}
-.hero small{letter-spacing:3px;font-size:12px}
+.hero small{letter-spacing:3px;font-size:12px;text-transform:uppercase}
 .hero h1{font-family:Georgia,serif;font-size:34px;font-style:italic;color:var(--rosa-esc);line-height:1.1}
 .hero .off{font-size:clamp(40px,12vw,64px);font-weight:800;color:var(--rosa-esc);line-height:1}
 .hero .cupom{border:2px dashed var(--rosa-esc);padding:6px 12px;font-weight:700;letter-spacing:2px;background:#fff8}
@@ -48,7 +48,7 @@ footer a{color:#eee;display:block;text-decoration:none}
 #prod{inset:0;max-width:520px;margin:auto;padding:14px}
 #carrinho{top:0;right:0;bottom:0;width:min(420px,100%);padding:16px}
 .x{float:right;background:none;border:0;font-size:24px;cursor:pointer}
-.tams button{padding:8px 14px;border:1px solid #bbb;background:#fff;margin-right:6px;cursor:pointer}
+.tams button{padding:8px 14px;border:1px solid #bbb;background:#fff;margin:0 6px 6px 0;cursor:pointer}
 .tams button.sel{background:var(--tinta);color:#fff}
 .lin{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #eee;font-size:14px}
 .cook{position:fixed;bottom:0;left:0;right:0;background:#fffe;font-size:11px;padding:8px;text-align:center;z-index:30}
@@ -59,7 +59,7 @@ footer a{color:#eee;display:block;text-decoration:none}
 <header>
   <div class="topo">
     <button class="ic" id="menu" aria-label="Menu">☰</button>
-    <div class="logo">Camila</div>
+    <div class="logo" id="tMarca">Camila</div>
     <div><button class="ic" id="abrirCarrinho" aria-label="Carrinho">🛍<span class="badge" id="qtd">0</span></button></div>
   </div>
   <div class="busca"><input id="q" placeholder="O que você está buscando?"><button aria-label="Buscar">🔍</button></div>
@@ -69,11 +69,11 @@ footer a{color:#eee;display:block;text-decoration:none}
 </nav>
 
 <section class="hero"><div class="txt">
-  <small>É NOVA POR AQUI?</small>
-  <h1>Bem-vinda<br>à minha loja</h1>
-  <div class="off">5% OFF</div>
-  <div class="cupom">CUPOM BEMVINDA</div>
-  <p style="font-size:13px">No seu primeiro pedido, com desconto aplicado no carrinho.</p>
+  <small id="tChamada">É nova por aqui?</small>
+  <h1 id="tTitulo">Bem-vinda à minha loja</h1>
+  <div class="off"><span id="tPct">5</span>% OFF</div>
+  <div class="cupom">CUPOM <span id="tCupom">BEMVINDA</span></div>
+  <p style="font-size:13px" id="tCupomTexto">No seu primeiro pedido, com desconto aplicado no carrinho.</p>
   <button class="btn" onclick="location.hash='destaques'">COMPRE AGORA</button>
 </div><img src="camila.png" alt="Camila"></section>
 
@@ -86,7 +86,7 @@ footer a{color:#eee;display:block;text-decoration:none}
 <h2 id="quem">Quem somos</h2>
 <div style="display:flex;gap:14px;padding:0 14px;align-items:center">
   <img src="camila.png" alt="Camila" style="width:130px;height:130px;object-fit:cover;object-position:50% 20%;border-radius:50%;border:4px solid var(--rosa)">
-  <p style="font-size:14px;line-height:1.6">Texto de apresentação da marca da Camila. Conte aqui a história, o estilo e o que torna a loja especial.</p>
+  <p style="font-size:14px;line-height:1.6;white-space:pre-line" id="tQuem">Conte aqui a história, o estilo e o que torna a loja especial.</p>
 </div>
 
 <div class="news">
@@ -97,78 +97,117 @@ footer a{color:#eee;display:block;text-decoration:none}
 <footer id="contato">
   <a href="#destaques">Início</a><a href="#destaques">Produtos</a><a href="#contato">Contato</a><a href="#quem">Quem somos</a>
   <p style="margin-top:10px">Meios de pagamento: Visa · Mastercard · Pix · Boleto</p>
-  <p>Siga-nos no Instagram: @camila</p>
+  <p>Siga-nos no Instagram: <span id="tInsta">@camila</span></p>
 </footer>
 
-<a class="zap" href="https://wa.me/5511900000000" target="_blank" aria-label="WhatsApp">✆</a>
+<a class="zap" id="zap" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">✆</a>
 <div class="cook" id="cook">Ao navegar por este site você aceita o uso de cookies para agilizar sua experiência de compra. <a href="#" onclick="document.getElementById('cook').remove();return false">Entendi</a></div>
 
 <div class="mask" id="mask"></div>
 <div class="painel" id="prod"></div>
 <div class="painel" id="carrinho"></div>
 
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
-const PRODUTOS=[
- {id:1,nome:'Corset Poliana',preco:130,cores:['Azul','Preto'],tam:['P','M','G'],ultima:true,cor:'#9bb4d8'},
- {id:2,nome:'Corset Renda',preco:125,cores:['Preto'],tam:['P','M','G'],ultima:true,cor:'#4a3f45'},
- {id:3,nome:'Corset Isabela',preco:120,cores:['Nude'],tam:['P','M'],ultima:true,cor:'#d9b8a4'},
- {id:4,nome:'Cropped Elza',preco:100,cores:['Branco'],tam:['P','M','G'],ultima:false,cor:'#eee4e8'},
- {id:5,nome:'Calça Pantalona',preco:200,cores:['Jeans'],tam:['36','38','40','42'],ultima:true,cor:'#7f9cc2'},
- {id:6,nome:'Conjunto Pérola',preco:290,cores:['Off white'],tam:['P','M','G'],ultima:false,cor:'#f1e8dc'},
- {id:7,nome:'Corset Floral',preco:120,cores:['Rosa'],tam:['P','M','G'],ultima:true,cor:'#e9a9c0'},
- {id:8,nome:'Body Bia',preco:75,cores:['Branco','Preto'],tam:['P','M','G'],ultima:true,cor:'#cfc7cc'}
-];
-const R=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-let carrinho=JSON.parse(localStorage.getItem('carrinhoCamila')||'[]');
 const $=id=>document.getElementById(id);
-function card(p){return `<div class="card" onclick="abrir(${p.id})"><div class="foto" style="background:${p.cor}">foto do produto</div><b>${p.nome}</b><div class="preco">${R(p.preco)}</div><div class="parc">12x de ${R(p.preco/12)}</div>${p.ultima?'<div class="aviso">Atenção, última peça!</div>':''}</div>`}
+const R=n=>Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// Exemplo, usado enquanto o banco não estiver ligado
+let PRODUTOS=[
+ {id:1,nome:'Corset Poliana',preco:130,cores:['Azul','Preto'],tamanhos:['P','M','G'],ultima_peca:true,destaque:true,cor:'#9bb4d8'},
+ {id:2,nome:'Corset Renda',preco:125,cores:['Preto'],tamanhos:['P','M','G'],ultima_peca:true,destaque:true,cor:'#4a3f45'},
+ {id:3,nome:'Corset Isabela',preco:120,cores:['Nude'],tamanhos:['P','M'],ultima_peca:true,destaque:true,cor:'#d9b8a4'},
+ {id:4,nome:'Cropped Elza',preco:100,cores:['Branco'],tamanhos:['P','M','G'],ultima_peca:false,destaque:true,cor:'#eee4e8'},
+ {id:5,nome:'Calça Pantalona',preco:200,cores:['Jeans'],tamanhos:['36','38','40','42'],ultima_peca:true,destaque:false,cor:'#7f9cc2'},
+ {id:6,nome:'Conjunto Pérola',preco:290,cores:['Off white'],tamanhos:['P','M','G'],ultima_peca:false,destaque:false,cor:'#f1e8dc'}
+];
+let CFG={whatsapp:'5511900000000'};
+
+function lerCarrinho(){try{return JSON.parse(localStorage.getItem('carrinhoCamila')||'[]')}catch(e){return[]}}
+let carrinho=lerCarrinho();
+function salvar(){try{localStorage.setItem('carrinhoCamila',JSON.stringify(carrinho))}catch(e){};$('qtd').textContent=carrinho.reduce((a,i)=>a+i.q,0)}
+
+function fotoHtml(p,extra=''){
+ return p.foto_url?`<div class="foto" style="background-image:url('${esc(p.foto_url)}');${extra}"></div>`
+  :`<div class="foto" style="background:${p.cor||'#e6d9de'};${extra}">foto do produto</div>`;
+}
+function card(p){return `<div class="card" onclick="abrir(${p.id})">${fotoHtml(p)}<b>${esc(p.nome)}</b><div class="preco">${R(p.preco)}</div><div class="parc">12x de ${R(p.preco/12)}</div>${p.ultima_peca?'<div class="aviso">Atenção, última peça!</div>':''}</div>`}
 function render(filtro=''){
  const l=PRODUTOS.filter(p=>p.nome.toLowerCase().includes(filtro.toLowerCase()));
- $('gDest').innerHTML=l.slice(0,4).map(card).join('')||'<p>Nenhum produto encontrado.</p>';
- $('gLanc').innerHTML=l.slice(4).map(card).join('');
+ const dest=l.filter(p=>p.destaque),lanc=l.filter(p=>!p.destaque);
+ $('gDest').innerHTML=dest.map(card).join('')||'<p style="grid-column:1/-1;font-size:14px;color:#777">Nenhum produto em destaque.</p>';
+ $('gLanc').innerHTML=lanc.map(card).join('')||'<p style="grid-column:1/-1;font-size:14px;color:#777">Em breve, novidades.</p>';
 }
+function aplicarTextos(){
+ const t=(id,k)=>{if(CFG[k]!=null&&CFG[k]!=='')$(id).textContent=CFG[k]};
+ t('tMarca','marca');t('tChamada','chamada');t('tTitulo','titulo');t('tPct','cupom_pct');t('tCupom','cupom_codigo');
+ t('tCupomTexto','cupom_texto');t('tQuem','quem_somos');t('tInsta','instagram');
+ if(CFG.marca)document.title='Loja '+CFG.marca;
+ $('zap').href='https://wa.me/'+String(CFG.whatsapp||'').replace(/\D/g,'');
+}
+async function carregarBanco(){
+ const L=window.LOJA||{};
+ if(!L.SUPABASE_URL||!L.SUPABASE_ANON_KEY||!window.supabase)return;
+ try{
+  const db=window.supabase.createClient(L.SUPABASE_URL,L.SUPABASE_ANON_KEY);
+  const [p,c]=await Promise.all([
+   db.from('produtos').select('*').eq('ativo',true).order('criado_em',{ascending:false}),
+   db.from('config').select('chave,valor')]);
+  if(p.error||c.error)throw (p.error||c.error);
+  PRODUTOS=p.data;
+  c.data.forEach(r=>CFG[r.chave]=r.valor);
+ }catch(e){console.warn('Banco indisponível, usando exemplo.',e)}
+}
+
 $('q').oninput=e=>render(e.target.value);
 $('menu').onclick=()=>$('nav').classList.toggle('on');
 function fechar(){['prod','carrinho','mask'].forEach(i=>$(i).classList.remove('on'))}
 $('mask').onclick=fechar;
 let sel={};
 function abrir(id){
- const p=PRODUTOS.find(x=>x.id==id);sel={id,cor:p.cores[0],tam:null};
- $('prod').innerHTML=`<button class="x" onclick="fechar()">×</button><div class="foto" style="background:${p.cor};aspect-ratio:3/4;margin-top:30px">foto do produto</div>
- <h2 style="padding:14px 0 4px">${p.nome}</h2><div class="preco" style="font-size:26px">${R(p.preco)}</div><div class="parc">12x de ${R(p.preco/12)}</div>
- <p style="margin:12px 0 6px;font-size:14px">Cor: <b id="corSel">${p.cores[0]}</b></p>
- <div class="tams">${p.cores.map(c=>`<button class="${c==p.cores[0]?'sel':''}" onclick="escCor(this,'${c}')">${c}</button>`).join('')}</div>
+ const p=PRODUTOS.find(x=>x.id==id);if(!p)return;
+ const cores=p.cores&&p.cores.length?p.cores:['Única'];
+ sel={id:p.id,cor:cores[0],tam:null};
+ $('prod').innerHTML=`<button class="x" onclick="fechar()">×</button>${fotoHtml(p,'margin-top:30px')}
+ <h2 style="padding:14px 0 4px">${esc(p.nome)}</h2><div class="preco" style="font-size:26px">${R(p.preco)}</div><div class="parc">12x de ${R(p.preco/12)}</div>
+ <p style="margin:12px 0 6px;font-size:14px">Cor: <b id="corSel">${esc(cores[0])}</b></p>
+ <div class="tams">${cores.map((c,n)=>`<button class="${n==0?'sel':''}" data-c="${esc(c)}">${esc(c)}</button>`).join('')}</div>
  <p style="margin:12px 0 6px;font-size:14px">Tamanho:</p>
- <div class="tams">${p.tam.map(t=>`<button onclick="escTam(this,'${t}')">${t}</button>`).join('')}</div>
+ <div class="tams" id="tamBox">${(p.tamanhos||[]).map(t=>`<button data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>
  <p id="erro" style="color:#c00;font-size:13px;margin-top:8px"></p>
  <div style="margin-top:16px"><button class="btn verde" onclick="comprar()">Comprar</button></div>`;
+ $('prod').querySelectorAll('button[data-c]').forEach(b=>b.onclick=()=>{sel.cor=b.dataset.c;$('corSel').textContent=sel.cor;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')});
+ $('prod').querySelectorAll('button[data-t]').forEach(b=>b.onclick=()=>{sel.tam=b.dataset.t;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')});
  $('prod').classList.add('on');$('mask').classList.add('on');
 }
-function escCor(b,c){sel.cor=c;$('corSel').textContent=c;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')}
-function escTam(b,t){sel.tam=t;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')}
 function comprar(){
- if(!sel.tam){$('erro').textContent='Escolha um tamanho.';return}
+ const p=PRODUTOS.find(x=>x.id==sel.id);
+ if(p.tamanhos&&p.tamanhos.length&&!sel.tam){$('erro').textContent='Escolha um tamanho.';return}
  const ex=carrinho.find(i=>i.id==sel.id&&i.cor==sel.cor&&i.tam==sel.tam);
- ex?ex.q++:carrinho.push({...sel,q:1});
+ ex?ex.q++:carrinho.push({...sel,q:1,nome:p.nome,preco:Number(p.preco)});
  salvar();fechar();abrirCarrinho();
 }
-function salvar(){localStorage.setItem('carrinhoCamila',JSON.stringify(carrinho));$('qtd').textContent=carrinho.reduce((a,i)=>a+i.q,0)}
 function abrirCarrinho(){
- const total=carrinho.reduce((a,i)=>a+i.q*PRODUTOS.find(p=>p.id==i.id).preco,0);
+ const total=carrinho.reduce((a,i)=>a+i.q*i.preco,0);
  $('carrinho').innerHTML=`<button class="x" onclick="fechar()">×</button><h3>Carrinho de compras</h3><div style="margin-top:14px">`+
- (carrinho.length?carrinho.map((i,n)=>{const p=PRODUTOS.find(x=>x.id==i.id);return `<div class="lin"><span>${p.nome} (${i.cor}, ${i.tam}) × ${i.q}</span><span>${R(p.preco*i.q)} <a href="#" onclick="rem(${n});return false" style="color:#c00;font-size:12px">Remover</a></span></div>`}).join(''):'<p>Seu carrinho está vazio.</p>')+
- `</div><p class="lin"><b>Total</b><b>${R(total)}</b></p><p style="font-size:12px;color:#777;margin:8px 0">Frete calculado no checkout. Use o cupom BEMVINDA no primeiro pedido.</p>
- <button class="btn verde" onclick="finalizar()">Iniciar compra</button>`;
+ (carrinho.length?carrinho.map((i,n)=>`<div class="lin"><span>${esc(i.nome)} (${esc(i.cor)}${i.tam?', '+esc(i.tam):''}) × ${i.q}</span><span>${R(i.preco*i.q)} <a href="#" onclick="rem(${n});return false" style="color:#c00;font-size:12px">Remover</a></span></div>`).join(''):'<p>Seu carrinho está vazio.</p>')+
+ `</div><p class="lin"><b>Total</b><b>${R(total)}</b></p><p style="font-size:12px;color:#777;margin:8px 0">Frete combinado no WhatsApp.${CFG.cupom_codigo?' Cupom '+esc(CFG.cupom_codigo)+' no primeiro pedido.':''}</p>
+ <button class="btn verde" onclick="finalizar()">Finalizar pelo WhatsApp</button>`;
  $('carrinho').classList.add('on');$('mask').classList.add('on');
 }
 function rem(n){carrinho.splice(n,1);salvar();abrirCarrinho()}
 function finalizar(){
  if(!carrinho.length)return;
- const t=carrinho.map(i=>{const p=PRODUTOS.find(x=>x.id==i.id);return `• ${p.nome} (${i.cor}, ${i.tam}) x${i.q}`}).join('%0A');
- window.open('https://wa.me/5511900000000?text='+encodeURIComponent('Olá! Quero finalizar este pedido:\n')+t,'_blank');
+ const t=carrinho.map(i=>`• ${i.nome} (${i.cor}${i.tam?', '+i.tam:''}) x${i.q} - ${R(i.preco*i.q)}`).join('\n');
+ const total=carrinho.reduce((a,i)=>a+i.q*i.preco,0);
+ window.open('https://wa.me/'+String(CFG.whatsapp).replace(/\D/g,'')+'?text='+encodeURIComponent('Olá! Quero finalizar este pedido:\n'+t+'\nTotal: '+R(total)),'_blank');
 }
 $('abrirCarrinho').onclick=abrirCarrinho;
-render();salvar();
+
+aplicarTextos();render();salvar();
+carregarBanco().then(()=>{aplicarTextos();render()});
 </script>
 </body>
 </html>

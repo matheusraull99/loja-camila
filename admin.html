@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Painel da loja</title>
+<style>
+:root{--rosa:#f7b6cf;--rosa-esc:#e0568f;--tinta:#2b2326;--cinza:#f4f1f2;--verde:#2e9e5b}
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;color:var(--tinta);background:var(--cinza);padding:0 0 40px}
+header{background:var(--rosa);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+header h1{font-family:Georgia,serif;font-style:italic;font-size:20px}
+main{max-width:720px;margin:auto;padding:16px}
+.box{background:#fff;border-radius:8px;padding:16px;margin-bottom:16px}
+h2{font-size:17px;margin-bottom:12px}
+label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px}
+small{font-weight:400;color:#777}
+input[type=text],input[type=email],input[type=password],input[type=number],textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:5px;font:inherit}
+textarea{min-height:90px;resize:vertical}
+.btn{background:var(--rosa-esc);color:#fff;border:0;padding:11px 18px;font-weight:700;border-radius:5px;cursor:pointer;font-size:14px}
+.btn.sec{background:#fff;color:var(--tinta);border:1px solid #bbb}
+.btn.ver{background:var(--verde)}
+.btn.perigo{background:#fff;color:#c00;border:1px solid #c00}
+.linha{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.abas{display:flex;gap:8px;margin-bottom:16px}
+.abas button{flex:1}
+.abas button.on{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+.item{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #eee}
+.item img,.item .sf{width:56px;height:72px;object-fit:cover;border-radius:4px;background:#eee;flex:none}
+.item div{min-width:0;flex:1}
+.item b{display:block;font-size:14px}
+.item span{font-size:12px;color:#777}
+.tag{display:inline-block;background:#fde3ee;color:var(--rosa-esc);border-radius:9px;padding:1px 8px;font-size:11px;margin-right:4px}
+.tag.off{background:#eee;color:#777}
+#aviso{position:fixed;left:16px;right:16px;bottom:16px;max-width:520px;margin:auto;background:var(--tinta);color:#fff;padding:12px 16px;border-radius:8px;display:none;z-index:9;font-size:14px}
+#aviso.erro{background:#b3261e}
+.prev{width:120px;height:160px;object-fit:cover;border-radius:5px;margin-top:8px;background:#eee;display:block}
+.ck{display:flex;align-items:center;gap:8px;margin:12px 0 0;font-weight:600;font-size:14px}
+.ck input{width:18px;height:18px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><h1>Painel da loja</h1><button class="btn sec" id="sair" hidden>Sair</button></header>
+<main>
+
+<div id="semConfig" class="box" hidden>
+  <h2>Banco de dados não configurado</h2>
+  <p style="font-size:14px;line-height:1.5">Preencha <b>config.js</b> com a URL e a chave do Supabase para ligar o painel.</p>
+</div>
+
+<form id="login" class="box" hidden>
+  <h2>Entrar</h2>
+  <label for="em">E-mail</label><input type="email" id="em" autocomplete="username" required>
+  <label for="se">Senha</label><input type="password" id="se" autocomplete="current-password" required>
+  <div style="margin-top:16px"><button class="btn" type="submit">Entrar</button></div>
+</form>
+
+<div id="app" hidden>
+  <div class="abas">
+    <button class="btn sec on" id="aP">Produtos</button>
+    <button class="btn sec" id="aT">Textos da loja</button>
+  </div>
+
+  <section id="pProdutos">
+    <div class="box">
+      <div class="linha" style="justify-content:space-between"><h2 style="margin:0">Seus produtos</h2><button class="btn" id="novo">+ Novo produto</button></div>
+      <div id="lista"></div>
+    </div>
+
+    <form id="form" class="box" hidden>
+      <h2 id="formTit">Novo produto</h2>
+      <label for="nome">Nome</label><input type="text" id="nome" required>
+      <label for="preco">Preço (R$)</label><input type="number" id="preco" step="0.01" min="0" required>
+      <label for="cores">Cores <small>separe por vírgula. Ex.: Azul, Preto</small></label><input type="text" id="cores">
+      <label for="tams">Tamanhos <small>separe por vírgula. Ex.: P, M, G</small></label><input type="text" id="tams">
+      <label for="foto">Foto</label>
+      <input type="file" id="foto" accept="image/*">
+      <img id="prev" class="prev" alt="" hidden>
+      <label class="ck"><input type="checkbox" id="destaque"> Mostrar em Destaques</label>
+      <label class="ck"><input type="checkbox" id="ultima"> Última peça</label>
+      <label class="ck"><input type="checkbox" id="ativo" checked> Visível na loja</label>
+      <div class="linha" style="margin-top:18px">
+        <button class="btn ver" type="submit" id="salvarP">Salvar produto</button>
+        <button class="btn sec" type="button" id="cancelar">Cancelar</button>
+        <button class="btn perigo" type="button" id="excluir" hidden>Excluir</button>
+      </div>
+    </form>
+  </section>
+
+  <form id="textos" class="box" hidden>
+    <h2>Textos da loja</h2>
+    <label for="c_marca">Nome da loja</label><input type="text" id="c_marca">
+    <label for="c_chamada">Frase pequena do banner</label><input type="text" id="c_chamada">
+    <label for="c_titulo">Título do banner</label><input type="text" id="c_titulo">
+    <label for="c_cupom_pct">Desconto do cupom (%)</label><input type="number" id="c_cupom_pct" min="0" max="90">
+    <label for="c_cupom_codigo">Código do cupom</label><input type="text" id="c_cupom_codigo">
+    <label for="c_cupom_texto">Texto do cupom</label><input type="text" id="c_cupom_texto">
+    <label for="c_quem_somos">Quem somos</label><textarea id="c_quem_somos"></textarea>
+    <label for="c_instagram">Instagram</label><input type="text" id="c_instagram">
+    <label for="c_whatsapp">WhatsApp <small>com DDD, só números. Ex.: 11999998888</small></label><input type="text" id="c_whatsapp" inputmode="numeric">
+    <div style="margin-top:18px"><button class="btn ver" type="submit">Salvar textos</button></div>
+  </form>
+</div>
+</main>
+<div id="aviso"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const R=n=>Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const CHAVES=['marca','chamada','titulo','cupom_pct','cupom_codigo','cupom_texto','quem_somos','instagram','whatsapp'];
+let db,produtos=[],editando=null,fotoNova=null;
+
+function aviso(msg,erro){const a=$('aviso');a.textContent=msg;a.className=erro?'erro':'';a.style.display='block';clearTimeout(aviso.t);aviso.t=setTimeout(()=>a.style.display='none',erro?6000:2500)}
+const lista=v=>v.split(',').map(s=>s.trim()).filter(Boolean);
+
+const L=window.LOJA||{};
+if(!L.SUPABASE_URL||!L.SUPABASE_ANON_KEY||!window.supabase){$('semConfig').hidden=false}
+else{
+  db=window.supabase.createClient(L.SUPABASE_URL,L.SUPABASE_ANON_KEY);
+  db.auth.getSession().then(({data})=>data.session?entrar():($('login').hidden=false));
+}
+
+$('login').onsubmit=async e=>{
+  e.preventDefault();
+  const {error}=await db.auth.signInWithPassword({email:$('em').value.trim(),password:$('se').value});
+  if(error)return aviso('E-mail ou senha incorretos.',true);
+  entrar();
+};
+$('sair').onclick=async()=>{await db.auth.signOut();location.reload()};
+async function entrar(){
+  $('login').hidden=true;$('app').hidden=false;$('sair').hidden=false;
+  await Promise.all([carregarProdutos(),carregarTextos()]);
+}
+
+$('aP').onclick=()=>aba('P');$('aT').onclick=()=>aba('T');
+function aba(x){
+  $('aP').classList.toggle('on',x==='P');$('aT').classList.toggle('on',x==='T');
+  $('pProdutos').hidden=x!=='P';$('textos').hidden=x!=='T';
+}
+aba('P');
+
+async function carregarProdutos(){
+  const {data,error}=await db.from('produtos').select('*').order('criado_em',{ascending:false});
+  if(error)return aviso('Não consegui carregar os produtos.',true);
+  produtos=data;
+  $('lista').innerHTML=produtos.length?produtos.map(p=>`
+   <div class="item" data-id="${p.id}">
+    ${p.foto_url?`<img src="${esc(p.foto_url)}" alt="">`:'<div class="sf"></div>'}
+    <div><b>${esc(p.nome)}</b><span>${R(p.preco)}</span><br>
+     ${p.destaque?'<span class="tag">Destaque</span>':''}${p.ultima_peca?'<span class="tag">Última peça</span>':''}${p.ativo?'':'<span class="tag off">Oculto</span>'}</div>
+    <button class="btn sec" data-ed="${p.id}">Editar</button>
+   </div>`).join(''):'<p style="font-size:14px;color:#777;margin-top:12px">Nenhum produto ainda. Toque em "Novo produto".</p>';
+  $('lista').querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>abrirForm(produtos.find(p=>p.id==b.dataset.ed)));
+}
+
+function abrirForm(p){
+  editando=p||null;fotoNova=null;$('foto').value='';
+  $('formTit').textContent=p?'Editar produto':'Novo produto';
+  $('nome').value=p?.nome||'';$('preco').value=p?.preco??'';
+  $('cores').value=(p?.cores||[]).join(', ');$('tams').value=(p?.tamanhos||[]).join(', ');
+  $('destaque').checked=!!p?.destaque;$('ultima').checked=!!p?.ultima_peca;$('ativo').checked=p?p.ativo:true;
+  $('prev').hidden=!p?.foto_url;if(p?.foto_url)$('prev').src=p.foto_url;
+  $('excluir').hidden=!p;$('form').hidden=false;$('form').scrollIntoView({behavior:'smooth'});
+}
+$('novo').onclick=()=>abrirForm(null);
+$('cancelar').onclick=()=>{$('form').hidden=true};
+
+// Reduz a foto antes de enviar (máx. 1000 px), para a loja abrir rápido no celular
+function reduzir(file){
+  return new Promise((ok,no)=>{
+    const img=new Image(),url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const m=1000,k=Math.min(1,m/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      c.toBlob(b=>{URL.revokeObjectURL(url);b?ok(b):no(new Error('falha'))},'image/jpeg',.85);
+    };
+    img.onerror=()=>no(new Error('imagem inválida'));img.src=url;
+  });
+}
+$('foto').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{fotoNova=await reduzir(f);$('prev').src=URL.createObjectURL(fotoNova);$('prev').hidden=false}
+  catch(err){aviso('Não consegui ler essa foto. Tente outra.',true)}
+};
+
+$('form').onsubmit=async e=>{
+  e.preventDefault();
+  const btn=$('salvarP');btn.disabled=true;btn.textContent='Salvando...';
+  try{
+    let foto_url=editando?.foto_url||null;
+    if(fotoNova){
+      const nome=`p-${Date.now()}.jpg`;
+      const up=await db.storage.from('fotos').upload(nome,fotoNova,{contentType:'image/jpeg'});
+      if(up.error)throw up.error;
+      foto_url=db.storage.from('fotos').getPublicUrl(nome).data.publicUrl;
+    }
+    const row={nome:$('nome').value.trim(),preco:parseFloat($('preco').value),cores:lista($('cores').value),tamanhos:lista($('tams').value),
+      destaque:$('destaque').checked,ultima_peca:$('ultima').checked,ativo:$('ativo').checked,foto_url};
+    const r=editando?await db.from('produtos').update(row).eq('id',editando.id):await db.from('produtos').insert(row);
+    if(r.error)throw r.error;
+    $('form').hidden=true;aviso('Produto salvo.');await carregarProdutos();
+  }catch(err){aviso('Não foi possível salvar: '+(err.message||'erro'),true)}
+  btn.disabled=false;btn.textContent='Salvar produto';
+};
+let confirmaExcluir=false;
+$('excluir').onclick=async()=>{
+  if(!confirmaExcluir){confirmaExcluir=true;$('excluir').textContent='Toque de novo para excluir';setTimeout(()=>{confirmaExcluir=false;$('excluir').textContent='Excluir'},4000);return}
+  const r=await db.from('produtos').delete().eq('id',editando.id);
+  confirmaExcluir=false;$('excluir').textContent='Excluir';
+  if(r.error)return aviso('Não foi possível excluir.',true);
+  $('form').hidden=true;aviso('Produto excluído.');carregarProdutos();
+};
+
+async function carregarTextos(){
+  const {data,error}=await db.from('config').select('chave,valor');
+  if(error)return aviso('Não consegui carregar os textos.',true);
+  data.forEach(r=>{const el=$('c_'+r.chave);if(el)el.value=r.valor});
+}
+$('textos').onsubmit=async e=>{
+  e.preventDefault();
+  const rows=CHAVES.map(k=>({chave:k,valor:$('c_'+k).value.trim()}));
+  const r=await db.from('config').upsert(rows);
+  r.error?aviso('Não foi possível salvar os textos.',true):aviso('Textos salvos. A loja já mostra as mudanças.');
+};
+</script>
+</body>
+</html>
